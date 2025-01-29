@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { IsUrl } from 'class-validator';
-import shortUUID from 'short-uuid';
+import * as shortID from 'short-unique-id';
 
 export type ShortURLDocument = HydratedDocument<ShortURL>;
-
+const uuid = new shortID({ length: 6 });
 @Schema()
 export class ShortURL {
-  @Prop({ default: () => shortUUID.generate(), unique: true })
+  @Prop({ default: () => uuid.rnd(), unique: true })
   shortened_id: string;
 
   @Prop({ required: true })

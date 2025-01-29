@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ShortURLService } from './short-url.service';
 import ShortUrlDto from '../dto/short-url.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('short-url')
 @Controller('short-url')
 export class ShortURLController {
   constructor(private readonly shortURLService: ShortURLService) {}

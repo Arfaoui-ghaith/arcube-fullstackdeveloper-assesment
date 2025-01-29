@@ -9,19 +9,18 @@ export class ShortURLService {
     @InjectModel(ShortURL.name) private shortURLModel: Model<ShortURLDocument>,
   ) {}
 
-  async shortenURL(url: string): Promise<string> {
+  async shortenURL(url: string) {
     const shortURL = new this.shortURLModel({ url });
-    const savedURL = await shortURL.save();
-    return `http://localhost:3000/${savedURL.id}`; // Change base URL accordingly
+    return await shortURL.save(); // Change base URL accordingly
   }
 
-  async getOriginalURL(shortenedId: string): Promise<string> {
+  async getOriginalURL(shortenedId: string) {
     const shortURL = await this.shortURLModel
-      .findOne({ id: shortenedId })
+      .findOne({ shortened_id: shortenedId })
       .exec();
     if (!shortURL) {
       throw new NotFoundException('Shortened URL not found');
     }
-    return shortURL.url;
+    return shortURL;
   }
 }
