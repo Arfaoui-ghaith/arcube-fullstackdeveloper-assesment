@@ -5,6 +5,7 @@ import { ShortURL, ShortURLDocument } from '../schemas/shorturl.schema';
 import { HttpService } from '@nestjs/axios';
 import * as cheerio from 'cheerio';
 import ShortUrlDto from '../dto/short-url.dto';
+import * as axios from 'axios';
 
 @Injectable()
 export class ShortURLService {
@@ -22,10 +23,21 @@ export class ShortURLService {
       const logoUrl = this.extractWebsiteLogo(res.data);
       shortURL.status = status;
       shortURL.logo = logoUrl;
-    } catch (error: any) {
-      shortURL.status = 200;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (!error.response) {
+          shortURL.status = 503;
+        } else if (error.response.status === 999) {
+          shortURL.status = 200;
+        } else {
+          shortURL.status = error.response.status;
+        }
+      } else {
+        shortURL.status = 500;
+      }
       shortURL.logo = 'https://cdn-icons-png.flaticon.com/512/5339/5339181.png';
     }
+
     return await shortURL.save();
   }
 
