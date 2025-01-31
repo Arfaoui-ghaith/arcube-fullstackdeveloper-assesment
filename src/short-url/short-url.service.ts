@@ -57,6 +57,9 @@ export class ShortURLService {
         logoUrl = favicon.attr('href');
       }
     }
-    return logoUrl || 'https://cdn-icons-png.flaticon.com/512/5339/5339181.png';
+    if (!logoUrl || !logoUrl.startsWith('https')) {
+      return 'https://cdn-icons-png.flaticon.com/512/5339/5339181.png';
+    }
+    return logoUrl;
   }
 }
