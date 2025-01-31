@@ -22,10 +22,11 @@ export class ShortURLService {
       const logoUrl = this.extractWebsiteLogo(res.data);
       shortURL.status = status;
       shortURL.logo = logoUrl;
-      return await shortURL.save();
-    } catch {
-      throw new HttpException('Invalid URL', 400);
+    } catch (error: any) {
+      shortURL.status = 200;
+      shortURL.logo = 'https://cdn-icons-png.flaticon.com/512/5339/5339181.png';
     }
+    return await shortURL.save();
   }
 
   async getOriginalURL(shortenedId: string) {
