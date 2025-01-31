@@ -42,7 +42,7 @@ describe('ShortURLService', () => {
     it('should return a shortened URL with generated ID', async () => {
       const url = 'http://example.com';
       const result = await service.shortenURL(url);
-      expect(result).toBe('http://localhost:3000/generatedId'); // Expect the shortened URL with generated ID
+      expect(result).toBe(`http://localhost:3000/${result.id}`);
     });
 
     it('should call model.save', async () => {

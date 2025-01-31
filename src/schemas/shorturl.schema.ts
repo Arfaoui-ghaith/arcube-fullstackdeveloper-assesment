@@ -14,6 +14,12 @@ export class ShortURL {
   @IsUrl()
   url: string;
 
+  @Prop()
+  status: number;
+
+  @Prop()
+  logo: string;
+
   @Prop({ default: Date.now })
   timestamp: Date;
 }
