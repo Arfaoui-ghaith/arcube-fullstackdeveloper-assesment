@@ -3,7 +3,7 @@ import { ShortURLController } from './short-url.controller';
 import { ShortURLService } from './short-url.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ShortURL, ShortURLSchema } from '../schemas/shorturl.schema';
-import {HttpModule} from "@nestjs/axios";
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [

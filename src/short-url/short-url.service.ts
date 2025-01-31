@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ShortURL, ShortURLDocument } from '../schemas/shorturl.schema';
 import { HttpService } from '@nestjs/axios';
 import * as cheerio from 'cheerio';
+import ShortUrlDto from '../dto/short-url.dto';
 
 @Injectable()
 export class ShortURLService {
@@ -12,20 +13,33 @@ export class ShortURLService {
     private readonly httpService: HttpService,
   ) {}
 
-  async shortenURL(url: string) {
+  async shortenURL(data: ShortUrlDto) {
+    const { url } = data;
     const shortURL = new this.shortURLModel({ url });
-    const res = await this.httpService.axiosRef.get(url);
-    const status = res.status;
-    const logoUrl = this.extractWebsiteLogo(res.data);
-    shortURL.status = status;
-    shortURL.logo = logoUrl;
-    return await shortURL.save(); // Change base URL accordingly
+    try {
+      const res = await this.httpService.axiosRef.get(url);
+      const status = res.status;
+      const logoUrl = this.extractWebsiteLogo(res.data);
+      shortURL.status = status;
+      shortURL.logo = logoUrl;
+      return await shortURL.save();
+    } catch {
+      throw new HttpException('Invalid URL', 400);
+    }
   }
 
   async getOriginalURL(shortenedId: string) {
     return await this.shortURLModel
       .findOne({ shortened_id: shortenedId })
       .exec();
+  }
+
+  async verifyShortURL(shortenedId: string) {
+    const shortURL = await this.getOriginalURL(shortenedId);
+    if (!shortURL) {
+      throw new HttpException('Short URL not found', 404);
+    }
+    return shortURL;
   }
 
   private extractWebsiteLogo(html: string): string {

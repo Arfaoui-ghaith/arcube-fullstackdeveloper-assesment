@@ -14,8 +14,8 @@ export class ShortURLController {
   ) {}
 
   @Get('/verify/:shortenedId')
-  async verifyURL(shortenedId: string) {
-    return await this.shortURLService.getOriginalURL(shortenedId);
+  async verifyURL(@Param('shortenedId') shortenedId: string) {
+    return await this.shortURLService.verifyShortURL(shortenedId);
   }
 
   @ApiExcludeEndpoint()
@@ -33,6 +33,6 @@ export class ShortURLController {
 
   @Post('/shorten')
   async shortenURL(@Body() body: ShortUrlDto) {
-    return this.shortURLService.shortenURL(body.url);
+    return this.shortURLService.shortenURL(body);
   }
 }
